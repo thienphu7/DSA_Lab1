@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <string>
 using namespace std;
 
@@ -96,17 +96,49 @@ Node* mergeSortedLists(Node* l1, Node* l2) {
 }
 
 // 4. Find the Intersection of Two Linked Lists
-Node* findIntersection(Node* l1, Node* l2) {
-    Node* p1 = l1;
-    Node* p2 = l2;
+Node* getIntersectionNode(Node* head1, Node* head2) {
+    if (!head1 || !head2) return NULL;
 
-    while (p1 != p2) {
-        p1 = (p1 == NULL) ? l2 : p1->next;
-        p2 = (p2 == NULL) ? l1 : p2->next;
+    Node* start1 = head1;
+    while (start1) {
+        Node* start2 = head2;
+        while (start2) {
+            Node* temp1 = start1;
+            Node* temp2 = start2;
+
+            // Check if a contiguous subsequence starting at start1 matches a subsequence starting at start2
+            while (temp1 && temp2 && temp1->data == temp2->data) {
+                temp1 = temp1->next;
+                temp2 = temp2->next;
+            }
+
+            // If temp2 has reached the end, then we have found a match
+            if (temp2 == NULL) {
+                Node* intersection = makeNode(start1->data);
+                Node* tail = intersection;
+                temp1 = start1->next;
+
+                while (temp1 && start2) {
+                    if (temp1->data == start2->data) {
+                        tail->next = makeNode(temp1->data);
+                        tail = tail->next;
+                        temp1 = temp1->next;
+                        start2 = start2->next;
+                    }
+                    else {
+                        break;
+                    }
+                }
+
+                return intersection;
+            }
+
+            start2 = start2->next;
+        }
+        start1 = start1->next;
     }
-    return p1;
+    return NULL;
 }
-
 // 5. Reverse a Linked List
 Node* reverseList(Node* head) {
     Node* prev = NULL;
@@ -178,10 +210,11 @@ bool isPalindrome(Node* head) {
 Node* searchValue(Node* head, int x) {
     Node* result = NULL;
     Node* tail = NULL;
+    int index = 0;
 
     while (head != NULL) {
         if (head->data == x) {
-            Node* newNode = makeNode(head->data);
+            Node* newNode = makeNode(index);
             if (result == NULL) {
                 result = newNode;
                 tail = result;
@@ -192,12 +225,14 @@ Node* searchValue(Node* head, int x) {
             }
         }
         head = head->next;
+        index++;
     }
     return result;
 }
 
 // MENU
 void menu() {
+    cout << endl;
     cout << "Personal Information:\n";
     cout << "STT: 22521099\n";
     cout << "Full name: Le Hoang Thien Phu\n";
@@ -260,7 +295,7 @@ int main() {
     int choice;
     int x;
 
-    while (true) {
+    while (1) {
         menu();
         cin >> choice;
 
@@ -270,12 +305,14 @@ int main() {
             InputList(list1);
             FindMiddle(list1);
         }
+            
         else if (choice == 2) {
             deleteList(list1);  // Reset list1 before new population
             list1 = NULL;
             InputList(list1);
             cout << (detectCycle(list1) ? "Cycle detected" : "No cycle") << endl;
         }
+            
         else if (choice == 3) {
             cout << "Input list1:" << endl;
             InputList(list1);
@@ -285,14 +322,30 @@ int main() {
             printList(result);
             deleteList(result); // Clean up the memory
         }
+            
         else if (choice == 4) {
+            Node* head1 = NULL;
+            Node* head2 = NULL;
+            Node* intersectionPoint = NULL;
+
             cout << "Input list1:" << endl;
-            InputList(list1);
+            InputList(head1);
+
             cout << "Input list2:" << endl;
-            InputList(list2);
-            result = findIntersection(list1, list2);
-            cout << (result ? "Intersection found: " + to_string(result->data) : "No intersection") << endl;
+            InputList(head2);
+
+            intersectionPoint = getIntersectionNode(head1, head2);
+
+            if (intersectionPoint == NULL)
+                cout << "No Intersection Point" << endl;
+            else
+                cout << "Intersection Point: " << intersectionPoint->data << endl;
+
+            // Clean up
+            deleteList(head1);
+            deleteList(head2);
         }
+            
         else if (choice == 5) {
             cout << "Input list1:" << endl;
             InputList(list1);
@@ -300,17 +353,20 @@ int main() {
             printList(result);
             deleteList(result); // Clean up the memory
         }
+            
         else if (choice == 6) {
             cout << "Input list1:" << endl;
             InputList(list1);
             result = removeDuplicates(list1);
             printList(result);
         }
+            
         else if (choice == 7) {
             cout << "Input list1:" << endl;
             InputList(list1);
             cout << (isPalindrome(list1) ? "Palindrome" : "Not Palindrome") << endl;
         }
+        
         else if (choice == 8) {
             cout << "Input list1:" << endl;
             InputList(list1);
@@ -325,6 +381,7 @@ int main() {
                 cout << "Value not found" << endl;
             }
         }
+            
         else if (choice == 9) {
             break;
         }
@@ -335,6 +392,6 @@ int main() {
 
     deleteList(list1);
     deleteList(list2);
-
+    
     return 0;
 }
