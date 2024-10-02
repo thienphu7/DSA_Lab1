@@ -1,4 +1,7 @@
-﻿#include <iostream>
+//STT: 22521099
+//Full name: Le Hoang Thien Phu
+//Session 01 - Homework 01
+#include <iostream>
 #include <string>
 #include <vector>  // For storing display outputs
 using namespace std;
@@ -89,6 +92,12 @@ void displayPlaylist(Song* tail, vector<string>& output) {
 }
 
 int main() {
+    
+    cout << "STT: 22521099\n";
+    cout << "Full name: Le Hoang Thien Phu\n";
+    cout << "Session 01 - Homework 01\n";
+    cout << endl;
+    
     Song* head = NULL;
     Song* tail = NULL;
     Song* current = NULL;
